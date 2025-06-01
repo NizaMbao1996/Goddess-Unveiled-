@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Goddess Unveiled - Gallery</title>
+<style>
+body {
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  background-color: #f7f2e0;
+  margin: 0;
+}
+header {
+  background-color: #8b5e3c;
+  color: #fff;
+  padding: 20px;
+  text-align: center;
+}
+h1 {
+  font-size: 2.5em;
+  margin: 0;
+}
+nav {
+  margin: 20px;
+  text-align: center;
+}
+nav a {
+  margin: 0 15px;
+  text-decoration: none;
+  color: #8b5e3c;
+  font-weight: bold;
+}
+nav a:hover {
+  text-decoration: underline;
+}
+section {
+  max-width: 1000px;
+  margin: 20px auto;
+  padding: 20px;
+}
+h2 {
+  text-align: center;
+  color: #8b5e3c;
+}
+#media-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+}
+.media-item {
+  max-width: 300px;
+  width: 100%;
+}
+.media-item img,
+.media-item video {
+  width: 100%;
+  border-radius: 8px;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Goddess Unveiled - Gallery</h1>
+</header>
+
+<nav>
+  <a href="subscribe.html">Subscribe</a>
+</nav>
+
+<section id="media-section">
+  <h2>Exclusive Sacred Sexuality Media</h2>
+  <div id="media-grid">
+    <!-- Media will be loaded here -->
+  </div>
+</section>
+
+<script>
+// Check subscription status before loading media
+if (localStorage.getItem('subscribed') !== 'true') {
+  alert('Please subscribe first to view the content.');
+  window.location.href = 'subscribe.html';
+} else {
+  // Define your media files here
+  const mediaFiles = [
+    // Photos
+    { type: 'photo', title: 'Sacred Photo 1', filename: 'images/photo1.jpg' },
+    { type: 'photo', title: 'Sacred Photo 2', filename: 'images/photo2.jpg' },
+    // Videos
+    { type: 'video', title: 'Sacred Video 1', filename: 'videos/video1.mp4' },
+    { type: 'video', title: 'Sacred Video 2', filename: 'videos/video2.mp4' }
+  ];
+
+  const grid = document.getElementById('media-grid');
+
+  mediaFiles.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'media-item';
+
+    if (item.type === 'photo') {
+      const img = document.createElement('img');
+      img.src = item.filename;
+      img.alt = item.title;
+      div.appendChild(img);
+    } else if (item.type === 'video') {
+      const video = document.createElement('video');
+      video.src = item.filename;
+      video.controls = true;
+      div.appendChild(video);
+    }
+
+    const title = document.createElement('p');
+    title.textContent = item.title;
+    title.style.textAlign = 'center';
+    title.style.marginTop = '8px';
+    div.appendChild(title);
+
+    grid.appendChild(div);
+  });
+}
+</script>
+
+<footer>
+  © 2025 Goddess Unveiled. All Rights Reserved.
+  <div class="footer-payments">
+    <p>Pay with:</p>
+    <a href="https://www.paypal.com/donate?hosted_button_id=YOUR_BUTTON_ID" target="_blank">PayPal</a>
+    <a href="https://venmo.com/" target="_blank">Venmo</a>
+    <a href="https://cash.app/" target="_blank">Cash App</a>
+  </div>
+</footer>
+
+</body>
+</html>
