@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Goddess Unveiled - Subscribe</title>
+  <style>
+    body {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      background-color: #f7f2e0;
+      margin: 0;
+    }
+    header {
+      background-color: #8b5e3c;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      margin: 0;
+    }
+    section {
+      max-width: 600px;
+      margin: 40px auto;
+      background: #fff8f0;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    input[type="text"],
+    input[type="email"],
+    select,
+    button {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #8b5e3c;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #6b442d;
+    }
+    .error {
+      color: red;
+      margin-top: 5px;
+    }
+    .payment-section {
+      margin-top: 30px;
+      text-align: center;
+    }
+    #paypal-button-container {
+      margin-top: 10px;
+    }
+    #cashapp-section {
+      margin-top: 10px;
+    }
+    #cashapp-instructions {
+      background-color: #ffe4b2;
+      padding: 10px;
+      border-radius: 6px;
+      margin-top: 10px;
+      font-size: 1em;
+    }
+    #cashapp-qr {
+      margin-top: 10px;
+      max-width: 200px;
+    }
+    #access-content {
+      display: none; /* Hidden until payment confirmed */
+      margin-top: 40px;
+      padding: 20px;
+      background-color: #fff8f0;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    #access-content h2 {
+      margin-top: 0;
+    }
+  </style>
+  <!-- PayPal SDK: Your Client ID -->
+  <script src="https://www.paypal.com/sdk/js?client-id=ATpsCBlDpSgM89hJ2UEieyCFWzG71HBfchFSlY_7JP1mGnpx5Ek9Gk0UpaHo31Md7wfmA3Li_a1KtvK6&currency=USD"></script>
+</head>
+<body>
+
+<header>
+  <h1>Goddess Unveiled - Subscribe</h1>
+</header>
+
+<!-- Payment Form -->
+<section id="payment-form-section">
+  <h2>Subscribe Now</h2>
+  <p>Pay $19.96 for access.</p>
+  <form id="paymentForm">
+    <label for="name">Name:</label>
+    <input type="text" id="name" required />
+    <label for="email">Email:</label>
+    <input type="email" id="email" required />
+    <button type="submit">Submit Payment</button>
+  </form>
+  <div id="paymentError" class="error"></div>
+</section>
+
+<!-- Payment Buttons -->
+<div class="payment-section">
+  <h2>Pay with PayPal</h2>
+  <div id="paypal-button-container"></div>
+  <button id="confirm-paypal" style="display:none; margin-top:10px;">Confirm Payment</button>
+</div>
+
+<div class="payment-section" id="cashapp-section">
+  <h2>Pay with Cash App</h2>
+  <p>If you'd like to pay via Cash App, please follow these instructions:</p>
+  <div id="cashapp-instructions">
+    <p><strong>1. Send $19.96 to your Cash Tag:</strong></p>
+    <p style="font-size:1.2em; font-weight:bold;">$cocoji</p>
+    <p><strong>2. Alternatively, scan this QR code:</strong></p>
+    <img id="cashapp-qr" src="https://api.qrserver.com/v1/create-qr-code/?data=%24cocoji&size=200x200&margin=10" alt="Cash App QR Code" />
+    <p><em>After sending the payment, click the button below to confirm.</em></p>
+  </div>
+  <button id="cashapp-button">I Have Sent Payment via Cash App</button>
+  <button id="confirm-cashapp" style="display:none; margin-top:10px;">Confirm Cash App Payment</button>
+</div>
+
+<!-- Content accessible after payment confirmation -->
+<div id="access-content">
+  <h2>Welcome to the Gallery</h2>
+  <p>Congratulations! You now have access to the exclusive content.</p>
+  <!-- Replace below with your actual gallery content -->
+  <div>
+    <h3>Gallery Content</h3>
+    <p>[Your exclusive gallery images and content go here]</p>
+  </div>
+</div>
+
+<script>
+  // Track payment confirmation state
+  let isPaid = false;
+
+  // ----------- PayPal Button Setup -----------
+  paypal.Buttons({
+    createOrder: function(data, actions) {
+      return actions.order.create({
+        purchase_units: [{
+          amount: { value: '19.96' }
+        }]
+      });
+    },
+    onApprove: function(data, actions) {
+      return actions.order.capture().then(function(details) {
+        alert("PayPal payment successful! Click the confirm button below to access the content.");
+        // Show confirm button for user to acknowledge
+        document.getElementById('confirm-paypal').style.display = 'inline-block';
+      });
+    },
+    onError: function(err) {
+      console.error('PayPal error:', err);
+      alert("Error during PayPal payment.");
+    },
+    style: {
+      layout: 'vertical',
+      color: 'blue',
+      shape: 'rect',
+      label: 'paypal'
+    }
+  }).render('#paypal-button-container');
+
+  // ----------- Confirm PayPal Payment -----------
+
+  document.getElementById('confirm-paypal').addEventListener('click', function() {
+    isPaid = true;
+    showAccessContent();
+  });
+
+  // ----------- Cash App Payment -----------
+
+  document.getElementById('cashapp-button').addEventListener('click', function() {
+    alert("Please send $19.96 to your Cash Tag: $cocoji, then click 'Confirm Cash App Payment' below.");
+  });
+
+  document.getElementById('confirm-cashapp').addEventListener('click', function() {
+    // In real implementation, verify payment on server
+    alert("Thank you! Your payment is confirmed. Click OK to access the content.");
+    isPaid = true;
+    showAccessContent();
+  });
+
+  // ----------- Show Access Content Function -----------
+
+  function showAccessContent() {
+    if (isPaid) {
+      document.getElementById('payment-form-section').style.display = 'none';
+      document.querySelector('.payment-section').style.display = 'none';
+      document.getElementById('access-content').style.display = 'block';
+    }
+  }
+
+  // ----------- Optional: Handle manual form submission -----------
+
+  document.getElementById('paymentForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    // In real scenario, process form data and initiate payment
+    alert('Please complete your payment via PayPal or Cash App. Submit form is for info only.');
+  });
+</script>
+
+</body>
+</html>
