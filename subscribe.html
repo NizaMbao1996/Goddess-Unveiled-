@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Goddess Unveiled - Subscribe</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f8f8f8;
+  margin: 0;
+  padding: 20px;
+}
+header {
+  background-color: #222;
+  color: #fff;
+  padding: 10px;
+  text-align: center;
+}
+h1 {
+  margin: 0;
+}
+.payment-section {
+  background-color: #fff;
+  padding: 20px;
+  margin-top: 20px;
+  border-radius: 8px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+#access-content {
+  display: none;
+  margin-top: 20px;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  text-align: center;
+}
+.error {
+  color: red;
+}
+</style>
+<!-- PayPal SDK with your Client ID -->
+<script src="https://www.paypal.com/sdk/js?client-id=ATpsCBlDpSgM89hJ2UEieyCFWzG71HBfchFSlY_7JP1mGnpx5Ek9Gk0UpaHo31Md7wfmA3Li_a1KtvK6¤cy=USD"></script>
+</head>
+<body>
+<header>
+  <h1>Goddess Unveiled - Subscribe</h1>
+</header>
+
+<section class="payment-section" id="payment-form-section">
+  <h2>Subscribe Now</h2>
+  <p>Pay $19.96 for access to both the gallery and chat room.</p>
+  <form id="paymentForm">
+    <label>Name:</label><br/>
+    <input type="text" id="name" required/><br/><br/>
+    <label>Email:</label><br/>
+    <input type="email" id="email" required/><br/><br/>
+    <button type="submit">Submit Payment</button>
+  </form>
+  <div id="paymentError" class="error"></div>
+</section>
+
+<div class="payment-section" id="paypal-section" style="margin-top:20px;">
+  <h2>Pay with PayPal</h2>
+  <div id="paypal-button-container"></div>
+  <button id="confirmPayPalBtn" style="display:none; margin-top:10px;">Confirm PayPal Payment</button>
+</div>
+
+<div class="payment-section" id="cashapp-section" style="margin-top:20px;">
+  <h2>Pay with Cash App</h2>
+  <p>Send $19.96 to <strong>$cocoji</strong>, then click below:</p>
+  <img id="cashapp-qr" src="https://api.qrserver.com/v1/create-qr-code/?data=%24cocoji&size=200x200&margin=10" alt="Cash App QR Code" />
+  <p><em>After sending, click below to verify.</em></p>
+  <button id="cashappSendBtn">I Have Sent Payment via Cash App</button>
+  <button id="confirmCashAppBtn" style="display:none; margin-top:10px;">Confirm Cash App Payment</button>
+</div>
+
+<!-- Access Content after payment -->
+<div id="access-content" style="display:none; margin-top:20px; text-align:center;">
+  <h2>Welcome!</h2>
+  <p>Congratulations! You now have access to the exclusive content, gallery, and chat room.</p>
+  <p><a href="gallery.html">Go to Gallery</a></p>
+  <p><a href="chat-room.html">Join the Chat Room</a></p>
+</div>
+
+<script>
+const serverUrl = 'http://localhost:3001'; // your server URL
+
+// Check if user already subscribed
+if (localStorage.getItem('subscribed') === 'true') {
+  document.getElementById('payment-form-section').style.display='none';
+  document.getElementById('paypal-section').style.display='none';
+  document.getElementById('cashapp-section').style.display='none';
+  document.getElementById('access-content').style.display='block';
+}
+
+// Handle form submit (collect info)
+document.getElementById('paymentForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  alert('Please complete your payment via PayPal or Cash App.');
+});
+
+// PayPal Buttons
+let orderIDGlobal = '';
+paypal.Buttons({
+  createOrder: function(data, actions) {
+    return actions.order.create({
+      purchase_units: [{ amount: { value: '19.96' } }]
+    });
+  },
+  onApprove: function(data, actions) {
+    alert("PayPal payment successful! Click 'Confirm PayPal Payment' to verify.");
+    document.getElementById('confirmPayPalBtn').style.display='inline-block';
+    document.getElementById('confirmPayPalBtn').dataset.orderID = data.orderID;
+    orderIDGlobal = data.orderID;
+  }
+}).render('#paypal-button-container');
+
+document.getElementById('confirmPayPalBtn').addEventListener('click', () => {
+  const paymentID = document.getElementById('confirmPayPalBtn').dataset.orderID;
+  fetch(`${serverUrl}/verify-payment`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ paymentID: paymentID, email: document.getElementById('email').value })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.verified) {
+      alert('Payment verified! Access granted.');
+      grantAccess();
+    } else {
+      alert('Verification failed. Please try again.');
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    alert('Error verifying payment.');
+  });
+});
+
+// Cash App flow
+document.getElementById('cashappSendBtn').addEventListener('click', () => {
+  alert("Please send your Cash App payment, then click 'Confirm Cash App Payment'.");
+  document.getElementById('confirmCashAppBtn').style.display='inline-block';
+});
+document.getElementById('confirmCashAppBtn').addEventListener('click', () => {
+  alert('Cash App payment assumed completed! Access granted.');
+  grantAccess();
+});
+
+function grantAccess() {
+  localStorage.setItem('subscribed', 'true');
+  document.getElementById('payment-form-section').style.display='none';
+  document.getElementById('paypal-section').style.display='none';
+  document.getElementById('cashapp-section').style.display='none';
+  document.getElementById('access-content').style.display='block';
+}
+</script>
+</body>
+</html>

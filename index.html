@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Goddess Unveiled - Home</title>
+<style>
+body {
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  background-color: #f7f2e0;
+  margin: 0;
+}
+header {
+  background-color: #8b5e3c;
+  color: #fff;
+  padding: 20px;
+  text-align: center;
+}
+h1 {
+  font-size: 2.5em;
+  margin: 0;
+}
+nav {
+  margin: 20px;
+  text-align: center;
+}
+nav a {
+  margin: 0 15px;
+  text-decoration: none;
+  color: #8b5e3c;
+  font-weight: bold;
+}
+nav a:hover {
+  text-decoration: underline;
+}
+section {
+  max-width: 600px;
+  margin: 20px auto;
+  background: #fff8f0;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+button {
+  background-color: #8b5e3c;
+  color: #fff;
+  border: none;
+  padding: 15px 30px;
+  font-size: 1em;
+  margin-top: 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+button:hover {
+  background-color: #a9744d;
+}
+footer {
+  background-color: #8b5e3c;
+  color: #fff;
+  text-align: center;
+  padding: 15px;
+  margin-top: 40px;
+}
+.footer-payments {
+  margin-top: 10px;
+}
+.footer-payments a {
+  display: inline-block;
+  margin: 0 10px;
+  text-decoration: none;
+  color: #fff;
+  font-weight: bold;
+}
+.footer-payments a:hover {
+  text-decoration: underline;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Goddess Unveiled</h1>
+</header>
+
+<nav>
+  <a href="index.html">Home</a>
+  <a href="subscribe.html">Subscribe</a>
+  <a href="gallery.html">Gallery</a>
+  <a href="chat-room.html">Chat-Room</a>
+</nav>
+
+<section id="intro-section">
+  <h2>Welcome to Goddess Unveiled</h2>
+  <p>Experience sacred sexuality videos and photos. Subscribe now for $19.96/month.</p>
+  <button id="subscribeBtn">Subscribe Now</button>
+  <div id="subscribeMsg" style="margin-top:10px; font-weight:bold;"></div>
+</section>
+
+<!-- New Chat Room Access Section -->
+<section id="chat-room-section">
+  <h2>Join the Private Chat Room</h2>
+  <p>Subscribe to unlock access to our exclusive chat room where you can connect with others.</p>
+  <button id="enterChatBtn">Enter Chat Room</button>
+</section>
+
+<footer>
+  © 2025 Goddess Unveiled. All Rights Reserved.
+  <div class="footer-payments">
+    <p>Pay with:</p>
+    <a href="https://www.paypal.com/donate?hosted_button_id=YOUR_BUTTON_ID" target="_blank">PayPal</a>
+    <a href="https://venmo.com/" target="_blank">Venmo</a>
+    <a href="https://cash.app/" target="_blank">Cash App</a>
+  </div>
+</footer>
+
+<script>
+// Handle subscription button
+document.getElementById('subscribeBtn').addEventListener('click', () => {
+  const msgDiv = document.getElementById('subscribeMsg');
+  msgDiv.textContent = 'Processing payment...';
+
+  setTimeout(() => {
+    // Simulate a successful subscription
+    localStorage.setItem('subscribed', 'true');
+    msgDiv.textContent = 'Thank you for subscribing!';
+  }, 1500);
+});
+
+// Handle Enter Chat Room button
+document.getElementById('enterChatBtn').addEventListener('click', () => {
+  if (localStorage.getItem('subscribed') === 'true') {
+    window.location.href = 'chat-room.html';
+  } else {
+    alert('Please subscribe first to access the chat room.');
+  }
+});
+</script>
+
+</body>
+</html>
