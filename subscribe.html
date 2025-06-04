@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Goddess Unveiled - Subscribe</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f8f8;
+    margin: 0;
+    padding: 20px;
+  }
+  header {
+    background-color: #222;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+  }
+  h1 {
+    margin: 0;
+  }
+  .payment-section {
+    background-color: #fff;
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 8px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  #access-content {
+    display: none;
+    margin-top: 20px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    text-align: center;
+  }
+  button {
+    padding: 10px 20px;
+    font-size: 1em;
+  }
+</style>
+<!-- PayPal SDK with your Client ID -->
+<script src="https://www.paypal.com/sdk/js?client-id=ATpsCBlDpSgM89hJ2UEieyCFWzG71HBfchFSlY_7JP1mGnpx5Ek9Gk0UpaHo31Md7wfmA3Li_a1KtvK6&currency=USD"></script>
+</head>
+<body>
+<header>
+  <h1>Goddess Unveiled - Subscribe</h1>
+</header>
+
+<section class="payment-section" id="subscription-info">
+  <h2>Subscribe Now</h2>
+  <p>Pay $19.96 for access to both the gallery and chat room.</p>
+  <form id="subscribeForm">
+    <label>Name:</label><br/>
+    <input type="text" id="name" required/><br/><br/>
+    <label>Email:</label><br/>
+    <input type="email" id="email" required/><br/><br/>
+    <button type="submit">Proceed to Payment</button>
+  </form>
+  <div id="subscribeMsg" style="margin-top:10px; font-weight:bold; color:blue;"></div>
+</section>
+
+<div class="payment-section" id="paypal-section" style="display:none;">
+  <h2>Pay with PayPal</h2>
+  <div id="paypal-button-container"></div>
+  <button id="verifyPaypalBtn" style="display:none; margin-top:10px;">Verify PayPal Payment</button>
+</div>
+
+<div class="payment-section" id="cashapp-section" style="display:none;">
+  <h2>Pay with Cash App</h2>
+  <p>Send $19.96 to <strong>$cocoji</strong>. After sending, click below to verify:</p>
+  <img src="https://api.qrserver.com/v1/create-qr-code/?data=%24cocoji&size=200x200&margin=10" alt="Cash App QR code" />
+  <br/><br/>
+  <button id="cashAppSentBtn">I Have Sent Payment via Cash App</button>
+  <button id="verifyCashAppBtn" style="display:none; margin-top:10px;">Verify Cash App Payment</button>
+</div>
+
+<div id="access-content">
+  <h2>Welcome!</h2>
+  <p>You now have access to the exclusive content, gallery, and chat room.</p>
+  <p><a href="gallery.html">Go to Gallery</a></p>
+  <p><a href="chat-room.html">Join the Chat Room</a></p>
+</div>
+
+<script>
+// Server URL
+const serverUrl = 'http://localhost:3001';
+
+let userEmail = '';
+let userName = '';
+
+document.querySelector('#subscribeForm').addEventListener('submit', e => {
+  e.preventDefault();
+  userEmail = document.getElementById('email').value.trim();
+  userName = document.getElementById('name').value.trim();
+  if (userEmail && userName) {
+    document.getElementById('subscribeMsg').textContent = 'Processing...';
+    document.getElementById('paypal-section').style.display='block';
+    document.getElementById('cashapp-section').style.display='block';
+  } else {
+    alert('Please enter your name and email.');
+  }
+});
+
+// Initialize PayPal Buttons
+let currentOrderID = '';
+paypal.Buttons({
+  createOrder: function(data, actions) {
+    return actions.order.create({
+      purchase_units: [{ amount: { value: '19.96' } }]
+    }).then(orderID => {
+      currentOrderID = orderID;
+      return orderID;
+    });
+  },
+  onApprove: function(data, actions) {
+    alert('PayPal payment completed! Click "Verify PayPal Payment" to confirm.');
+    document.getElementById('verifyPaypalBtn').style.display='inline-block';
+    document.getElementById('verifyPaypalBtn').dataset.orderID = data.orderID;
+  },
+  onError: function(err) {
+    console.error('PayPal error:', err);
+    alert('Error during PayPal payment. Please try again.');
+  }
+}).render('#paypal-button-container');
+
+document.getElementById('verifyPaypalBtn').addEventListener('click', () => {
+  const orderID = document.getElementById('verifyPaypalBtn').dataset.orderID;
+  fetch(`${serverUrl}/verify-payment`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ paymentID: orderID, email: userEmail })
+  }).then(res => res.json())
+    .then(data => {
+      if (data.verified) {
+        alert('Payment verified! Access granted.');
+        grantAccess();
+      } else {
+        alert('Verification failed. Please try again.');
+      }
+    }).catch(err => {
+      console.error('Error verifying payment:', err);
+      alert('Error verifying payment.');
+    });
+});
+
+// Cash App flow
+document.getElementById('cashAppSentBtn').addEventListener('click', () => {
+  alert("Please send your Cash App payment, then click 'Verify Cash App Payment'.");
+  document.getElementById('verifyCashAppBtn').style.display='inline-block';
+});
+
+document.getElementById('verifyCashAppBtn').addEventListener('click', () => {
+  alert('Cash App payment assumed done! Access granted.');
+  grantAccess();
+});
+
+// Grant access function
+function grantAccess() {
+  localStorage.setItem('subscribed', 'true');
+  // Show protected content
+  document.getElementById('subscription-info').style.display='none';
+  document.getElementById('paypal-section').style.display='none';
+  document.getElementById('cashapp-section').style.display='none';
+  document.getElementById('access-content').style.display='block';
+}
+
+// On page load, check if already subscribed
+window.onload = () => {
+  if (localStorage.getItem('subscribed') === 'true') {
+    // Optionally, verify with server if needed
+    document.getElementById('subscription-info').style.display='none';
+    document.getElementById('paypal-section').style.display='none';
+    document.getElementById('cashapp-section').style.display='none';
+    document.getElementById('access-content').style.display='block';
+  }
+};
+</script>
+</body>
+</html>
