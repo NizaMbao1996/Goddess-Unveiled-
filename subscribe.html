@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Subscribe to Goddess Unveiled</title>
+<style>
+body {
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  background-color: #f7f2e0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  margin: 0;
+}
+h1 {
+  font-size: 2em;
+  color: #8b5e3c;
+  margin-bottom: 20px;
+}
+.container {
+  background: #fff8f0;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+}
+#statusMessage {
+  margin-top: 20px;
+  font-weight: bold;
+  height: 1.2em;
+}
+button {
+  background-color: #8b5e3c;
+  color: #fff;
+  border: none;
+  padding: 15px 30px;
+  font-size: 1em;
+  margin-top: 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+button:hover {
+  background-color: #a9744d;
+}
+#cashapp-qr {
+  margin-top: 20px;
+}
+#cashapp-qr img {
+  width: 200px;
+  height: 200px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Subscribe to Goddess Unveiled</h1>
+<p>Secure your access for $19.96/month via PayPal.</p>
+
+<!-- PayPal button container -->
+<div id="paypal-button-container"></div>
+
+<!-- CashApp QR code -->
+<h3>Pay with Cash App</h3>
+<a href="https://cash.app/$cocoji" target="_blank" style="display:inline-block;">
+  <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=Cash.app/$cocoji" alt="Cash App QR Code" />
+</a>
+
+<!-- Access after payment -->
+<div id="access-links" style="display:none; margin-top:20px;">
+  <a href="gallery.html" target="_blank">Go to Gallery</a><br/>
+  <a href="chat.html" target="_blank">Go to Chat Room</a>
+</div>
+
+<div id="statusMessage"></div>
+</div>
+
+<!-- Load PayPal SDK (replace with your actual client ID) -->
+<script src="https://www.paypal.com/sdk/js?client-id=ATpsCBlDpSgM89hJ2UEieyCFWzG71HBfchFSlY_7JP1mGnpx5Ek9Gk0UpaHo31Md7wfmA3Li_a1KtvK6&currency=USD"></script>
+
+<!-- Your custom JavaScript -->
+<script>
+  // Initialize PayPal Buttons
+  paypal.Buttons({
+    style: {
+      layout: 'vertical',
+      color:  'gold',
+      shape:  'rect',
+      label:  'paypal'
+    },
+    createOrder: function(data, actions) {
+      return actions.order.create({
+        purchase_units: [{
+          amount: {
+            value: '19.96'
+          }
+        }]
+      });
+    },
+    onApprove: function(data, actions) {
+      // Capture the order
+      return actions.order.capture().then(function(details) {
+        document.getElementById('statusMessage').innerText = 'Payment successful! Access granted.';
+        document.getElementById('access-links').style.display = 'block';
+      });
+    },
+    onError: function(err) {
+      document.getElementById('statusMessage').innerText = 'Payment failed. Please try again.';
+    },
+    onCancel: function() {
+      document.getElementById('statusMessage').innerText = 'Payment cancelled.';
+    }
+  }).render('#paypal-button-container');
+</script>
+</body>
+</html>
