@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Goddess Unveiled - Gallery</title>
+<style>
+body {
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  background-color: #f7f2e0;
+  margin: 0;
+}
+header {
+  background-color: #8b5e3c;
+  color: #fff;
+  padding: 20px;
+  text-align: center;
+}
+h1 {
+  font-size: 2.5em;
+  margin: 0;
+}
+#access-container {
+  max-width: 400px;
+  margin: 40px auto;
+  background: #fff8f0;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+#access-input {
+  padding: 10px;
+  font-size: 1em;
+  width: 80%;
+  margin-bottom: 10px;
+}
+#verifyBtn {
+  padding: 10px 20px;
+  background-color: #8b5e3c;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+#verifyBtn:hover {
+  background-color: #a9744d;
+}
+section {
+  display: none; /* Hidden initially; shown after correct code */
+  max-width: 1000px;
+  margin: 20px auto;
+  background: #fff8f0;
+  padding: 20px;
+  border-radius: 8px;
+}
+.gallery-item {
+  display: inline-block;
+  width: 300px;
+  margin: 10px;
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Goddess Unveiled - Gallery</h1>
+</header>
+
+<div id="access-container">
+  <h2>Enter Access Code</h2>
+  <input type="text" id="accessCode" maxlength="6" placeholder="6-character code" />
+  <br/>
+  <button id="verifyBtn">Verify</button>
+  <div id="errorMsg" style="color:red; margin-top:10px;"></div>
+</div>
+
+<div id="gallery-section">
+  <h2>Images</h2>
+  <!-- Sample Images -->
+  <div class="gallery-item"><img src="images/fertility.jpg" alt="Fertility" style="width:100%;"/></div>
+  <div class="gallery-item"><img src="images/nature.jpg" alt="Nature" style="width:100%;"/></div>
+  <div class="gallery-item"><img src="images/gushing.jpg" alt="Gushing" style="width:100%;"/></div>
+  <div class="gallery-item"><img src="images/female pleasure.jpg" alt="Female Pleasure" style="width:100%;"/></div>
+</div>
+
+<script>
+  const accessContainer = document.getElementById('access-container');
+  const gallerySection = document.getElementById('gallery-section');
+  const errorMsg = document.getElementById('errorMsg');
+
+  document.getElementById('verifyBtn').addEventListener('click', () => {
+    const code = document.getElementById('accessCode').value.trim().toUpperCase();
+
+    // Send verification request to server
+    fetch('/verify-code', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ code })
+    })
+    .then(res => res.text())
+    .then(html => {
+      if (html.includes('Invalid access code')) {
+        errorMsg.innerText = 'Invalid access code. Please try again.';
+      } else {
+        // Access granted
+        accessContainer.style.display='none';
+        gallerySection.style.display='block';
+      }
+    })
+    .catch(() => {
+      errorMsg.innerText = 'Error verifying code. Please try again.';
+    });
+  });
+</script>
+</body>
+</html>
