@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Goddess Unveiled - Home</title>
+<style>
+/* Your existing styles (same as previous, omitted here for brevity) */
+body {
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  background-color: #f7f2e0;
+  margin: 0;
+}
+header {
+  background-color: #8b5e3c;
+  color: #fff;
+  padding: 20px;
+  text-align: center;
+}
+h1 {
+  font-size: 2.5em;
+  margin: 0;
+}
+nav {
+  margin: 20px;
+  text-align: center;
+}
+nav a {
+  margin: 0 15px;
+  text-decoration: none;
+  color: #8b5e3c;
+  font-weight: bold;
+}
+nav a:hover {
+  text-decoration: underline;
+}
+section {
+  max-width: 600px;
+  margin: 20px auto;
+  background: #fff8f0;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+button {
+  background-color: #8b5e3c;
+  color: #fff;
+  border: none;
+  padding: 15px 30px;
+  font-size: 1em;
+  margin-top: 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+button:hover {
+  background-color: #a9744d;
+}
+footer {
+  background-color: #8b5e3c;
+  color: #fff;
+  text-align: center;
+  padding: 15px;
+  margin-top: 40px;
+}
+.footer-payments {
+  margin-top: 10px;
+}
+.footer-payments a {
+  display: inline-block;
+  margin: 0 10px;
+  text-decoration: none;
+  color: #fff;
+  font-weight: bold;
+}
+.footer-payments a:hover {
+  text-decoration: underline;
+}
+/* Modal styles omitted for brevity - same as previous code */
+.modal {
+  display: none; 
+  position: fixed; 
+  z-index: 999; 
+  left: 0;
+  top: 0;
+  width: 100%; 
+  height: 100%; 
+  overflow: auto; 
+  background-color: rgba(0,0,0,0.4);
+}
+.modal-content {
+  background-color: #fff;
+  margin: 10% auto; 
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%; 
+  max-width: 600px;
+  position: relative;
+}
+.close-btn {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  color: #aaa;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.close-btn:hover {
+  color: #000;
+}
+</style>
+<!-- Include EmailJS SDK -->
+<script src="https://cdn.emailjs.com/sdk/latest/email.min.js"></script>
+</head>
+<body>
+<header>
+  <h1>Goddess Unveiled</h1>
+</header>
+<nav>
+  <a href="index.html">Home</a>
+  <a href="subscribe.html">Subscribe</a>
+  <a href="gallery.html">Gallery</a>
+  <a href="chat-room.html">Chat-Room</a>
+</nav>
+
+<section id="intro-section">
+  <h2>Welcome to Goddess Unveiled</h2>
+  <p>Experience sacred sexuality videos and photos. Subscribe now for $19.96/month.</p>
+  <!-- Removed "Subscribe Now" button -->
+  <div id="subscribeMsg" style="margin-top:10px; font-weight:bold;"></div>
+</section>
+
+<!-- Chat Room Access -->
+<!-- Removed the "Enter Chat Room" button -->
+<!-- You can add other content here if needed -->
+
+<!-- Subscription Modal (same as before) -->
+<div id="subscribeModal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" id="closeModal">×</span>
+    <h2>Subscribe to Goddess Unveiled</h2>
+    <form id="subscribeForm">
+      <label for="name">Name:</label><br/>
+      <input type="text" id="name" name="name" required/><br/><br/>
+      <label for="email">Email:</label><br/>
+      <input type="email" id="email" name="email" required/><br/><br/>
+      <label for="plan">Select Plan:</label><br/>
+      <select id="plan" name="plan" required>
+        <option value="19.96">Full Access ($19.96/month)</option>
+      </select><br/><br/>
+      <h3>Payment System Details</h3>
+      <label for="paymentMessage">Please explain how you paid (e.g., PayPal, Venmo, CashApp):</label><br/>
+      <textarea id="paymentMessage" name="paymentMessage" rows="3" required></textarea><br/><br/>
+      <label for="fullName">Full Name:</label><br/>
+      <input type="text" id="fullName" name="fullName" required/><br/><br/>
+      <label for="userEmail">Your Email Address:</label><br/>
+      <input type="email" id="userEmail" name="userEmail" required/><br/><br/>
+      <button type="submit">Proceed to Payment</button>
+    </form>
+    <div id="paymentStatus" style="margin-top:10px; font-weight:bold;"></div>
+  </div>
+</div>
+
+<!-- Message Sending Modal (same as before) -->
+<div id="messageModal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" id="closeMsgModal">×</span>
+    <h2>Send a Message to Dr. Corynna Clarke</h2>
+    <form id="messageForm">
+      <label for="msgName">Full Name:</label><br/>
+      <input type="text" id="msgName" name="msgName" required/><br/><br/>
+      <label for="msgEmail">Your Email:</label><br/>
+      <input type="email" id="msgEmail" name="msgEmail" required/><br/><br/>
+      <label for="msgContent">Message:</label><br/>
+      <textarea id="msgContent" name="msgContent" rows="5" required></textarea><br/><br/>
+      <button type="submit">Send Message</button>
+    </form>
+    <div id="msgStatus" style="margin-top:10px; font-weight:bold;"></div>
+  </div>
+</div>
+
+<script>
+  // Initialize EmailJS
+  (function(){
+    emailjs.init("YOUR_EMAILJS_USER_ID"); // <-- Replace with your EmailJS User ID
+  })();
+
+  // Redirect buttons to subscribe page
+  document.getElementById('subscribeBtn').addEventListener('click', () => {
+    window.location.href = 'subscribe.html';
+  });
+  // Removed "Enter Chat Room" button handler as button was removed
+
+  // ------------------ Subscribe Modal Logic ------------------
+  const subscribeModal = document.getElementById('subscribeModal');
+  const closeModal = document.getElementById('closeModal');
+
+  document.getElementById('closeModal').addEventListener('click', () => {
+    subscribeModal.style.display = 'none';
+  });
+  window.onclick = function(event) {
+    if (event.target == subscribeModal) {
+      subscribeModal.style.display = 'none';
+    }
+  };
+
+  // Handle subscription form
+document.getElementById('subscribeForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  // Remove dropdown options after submit
+  document.getElementById('plan').innerHTML = '';
+
+  const paymentMsg = document.getElementById('paymentMessage').value;
+  const fullName = document.getElementById('fullName').value;
+  const userEmail = document.getElementById('userEmail').value;
+
+  document.getElementById('subscribeMsg').innerText = "Disclaimer: Payment is processed via PayPal, Venmo, or CashApp.";
+
+  const paymentStatusDiv = document.getElementById('paymentStatus');
+  paymentStatusDiv.innerText = 'Processing payment...';
+
+  setTimeout(() => {
+    paymentStatusDiv.innerText = 'Payment successful! Thank you for subscribing.';
+    setTimeout(() => {
+      subscribeModal.style.display = 'none';
+      document.getElementById('subscribeMsg').innerText = 'Subscription successful! You can now access the gallery and chat room.';
+    }, 1500);
+  }, 2000);
+
+  // Send email with payment info
+  sendPaymentInfoEmail(fullName, userEmail, paymentMsg);
+});
+
+// Function to send email via EmailJS
+function sendPaymentInfoEmail(name, email, message) {
+  const templateParams = {
+    from_name: name,
+    reply_to: email,
+    message: message
+  };
+  // Replace with your EmailJS service and template IDs
+  emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams)
+    .then(function(response) {
+       console.log('Payment info email sent', response.status, response.text);
+    }, function(error) {
+       console.log('Failed to send payment info email', error);
+    });
+}
+
+// ------------------ Send Message Modal ------------------
+const messageModal = document.getElementById('messageModal');
+const closeMsgModal = document.getElementById('closeMsgModal');
+
+const msgBtn = document.createElement('button');
+msgBtn.innerText = 'Send a Message to Dr. Corynna';
+msgBtn.style.margin = '20px auto';
+msgBtn.style.display = 'block';
+document.body.insertBefore(msgBtn, document.body.firstChild);
+
+msgBtn.addEventListener('click', () => {
+  document.getElementById('msgForm').reset();
+  document.getElementById('msgStatus').innerText = "";
+  messageModal.style.display = 'block';
+});
+
+closeMsgModal.addEventListener('click', () => {
+  messageModal.style.display = 'none';
+});
+window.onclick = function(event) {
+  if (event.target == messageModal) {
+    messageModal.style.display = 'none';
+  }
+};
+
+// Handle message form submit
+document.getElementById('messageForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const name = document.getElementById('msgName').value;
+  const email = document.getElementById('msgEmail').value;
+  const content = document.getElementById('msgContent').value;
+
+  // Send email to drcorynnaclarke@gmail.com
+  const templateParams = {
+    from_name: name,
+    reply_to: email,
+    message: content
+  };
+  // Replace with your EmailJS service and template IDs
+  emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams)
+    .then(function(response) {
+       document.getElementById('msgStatus').innerText = "Message sent successfully!";
+    }, function(error) {
+       document.getElementById('msgStatus').innerText = "Failed to send message. Please try again.";
+       console.log('Message send failed', error);
+    });
+});
+</script>
+</body>
+</html>
